@@ -1,7 +1,9 @@
 ﻿using dynDBx.Models;
 using dynDBx.Services.Database;
 using dynDBx.Utilities;
+using LiteDB;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Dynamic;
 using System.Threading.Tasks;
 
@@ -20,17 +22,17 @@ namespace dynDBx.Services.DynDatabase
                 {
                     using (var trans = db.BeginTrans())
                     {
-                        var newRoot = new JObject(
-                            new JProperty("name", "bob")
-                        );
+                        var newRoot = new JObject();
                         store.Insert(new JsonObjectStoreContainer
                         {
+                            ContainerId = Guid.NewGuid(),
                             JObject = newRoot,
                         });
                         trans.Commit();
                     }
                 }
-                var rootObject = store.FindOne(x => x != null).JObject;
+                var rootObjectContainer = store.FindOne(Query.All());
+                var rootObject = (JObject)rootObjectContainer.JObject;
                 using (var trans = db.BeginTrans())
                 {
                     var existingObject = rootObject.SelectToken(convTokenPath);

@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 
 namespace dynDBx.Models
 {
     public class JsonObjectStoreContainer : DatabaseObject
     {
-        public JObject JObject { get; set; }
+        public Guid ContainerId { get; set; }
+        public object JObject { get; set; }
     }
 }
