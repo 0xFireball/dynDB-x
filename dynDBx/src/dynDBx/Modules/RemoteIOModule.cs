@@ -1,6 +1,8 @@
 ﻿using dynDBx.Utilities;
 using Nancy;
-using System.Collections.Generic;
+using Nancy.Extensions;
+using Newtonsoft.Json;
+using System.Dynamic;
 
 namespace dynDBx.Modules
 {
@@ -11,9 +13,10 @@ namespace dynDBx.Modules
             Put("/{path*}", args =>
             {
                 var path = (string)args.path;
-                var data = (IDictionary<string, dynamic>)Request.Form;
+                // Deserialize data bundle
+                dynamic dataBundle = JsonConvert.DeserializeObject<ExpandoObject>(Request.Body.AsString());
                 // Return data written
-                return Response.AsJsonNet(data);
+                return Response.AsJsonNet((object)dataBundle);
             });
         }
     }
