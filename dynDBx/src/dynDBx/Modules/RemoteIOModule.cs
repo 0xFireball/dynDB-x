@@ -14,9 +14,18 @@ namespace dynDBx.Modules
             {
                 var path = (string)args.path;
                 // Deserialize data bundle
-                dynamic dataBundle = JsonConvert.DeserializeObject<ExpandoObject>(Request.Body.AsString());
+                dynamic dataBundle;
+                try
+                {
+                    dataBundle = JsonConvert.DeserializeObject<ExpandoObject>(Request.Body.AsString());
+                }
+                catch (JsonSerializationException)
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
                 // Return data written
-                return Response.AsJsonNet((object)dataBundle);
+                return Response.AsJsonNet((ExpandoObject)dataBundle);
             });
         }
     }
