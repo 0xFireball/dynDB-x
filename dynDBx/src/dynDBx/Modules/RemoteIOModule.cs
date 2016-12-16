@@ -1,4 +1,5 @@
-﻿using dynDBx.Utilities;
+﻿using dynDBx.Services.DynDatabase;
+using dynDBx.Utilities;
 using Nancy;
 using Nancy.Extensions;
 using Newtonsoft.Json;
@@ -23,6 +24,9 @@ namespace dynDBx.Modules
                 {
                     return HttpStatusCode.BadRequest;
                 }
+
+                // Write data
+                DynDatabaseService.WriteData(dataBundle, path);
 
                 // Return data written
                 return Response.AsJsonNet((ExpandoObject)dataBundle);
