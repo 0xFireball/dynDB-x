@@ -5,11 +5,13 @@ namespace dynDBx.Utilities
 {
     public class JTokenWalker
     {
+        private string originalQuery;
         private string[] queryFragments;
         private JToken _rootToken;
 
         public JTokenWalker(JToken rootToken, string queryPath)
         {
+            originalQuery = queryPath;
             queryFragments = queryPath.Split('.');
             _rootToken = rootToken;
         }
@@ -25,19 +27,21 @@ namespace dynDBx.Utilities
             {
                 var parentNodePath = string.Join(".", queryFragments.Take(queryFragments.Length - i));
                 var currTokNode = _rootToken.SelectToken(parentNodePath);
-                if (currTokNode != null)
+                if (currTokNode != null && currTokNode is JObject)
                 {
                     // Path has been found. Next tokens will be made
                     parentLevel = i;
                     break;
                 }
             }
-            var foundParent = string.Join(".", queryFragments.Take(queryFragments.Length - parentLevel));
-            for (int i = parentLevel; i < queryFragments.Length; i++)
+            var foundParent = (JObject)_rootToken.SelectToken(string.Join(".", queryFragments.Take(queryFragments.Length - parentLevel)));
+            for (int i = parentLevel; i > 0; i--)
             {
-                var parentNodePath = string.Join(".", queryFragments.Take(queryFragments.Length - i));
-                var currTokNode = _rootToken.SelectToken(parentNodePath);
+                var nextNodeKey = queryFragments[queryFragments.Length - i];
+                // Create next node
+                foundParent.Add(nextNodeKey, new JObject());
             }
+            result = _rootToken.SelectToken(originalQuery);
             return result;
         }
     }
