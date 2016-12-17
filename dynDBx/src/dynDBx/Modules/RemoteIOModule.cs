@@ -11,7 +11,7 @@ namespace dynDBx.Modules
     {
         public RemoteIOModule() : base("/io")
         {
-            Put("/{path*?}", async args =>
+            Put(@"^(?<path>[\w\/]+)$", async args =>
             {
                 var path = (string)args.path ?? "";
                 // Deserialize data bundle
@@ -32,7 +32,7 @@ namespace dynDBx.Modules
                 return Response.FromJsonString(dataBundleJ.ToString());
             });
 
-            Patch("/{path*?}", async args =>
+            Patch(@"^(?<path>[\w\/]+)$", async args =>
             {
                 var path = (string)args.path ?? "";
                 // Deserialize data bundle
@@ -53,7 +53,7 @@ namespace dynDBx.Modules
                 return Response.FromJsonString(dataBundleJ.ToString());
             });
 
-            Post("/{path*?}", async args =>
+            Post(@"^(?<path>[\w\/]+)$", async args =>
             {
                 var path = (string)args.path ?? "";
                 // Deserialize data bundle
@@ -74,7 +74,7 @@ namespace dynDBx.Modules
                 return Response.FromJsonString(dataBundleJ.ToString());
             });
 
-            Delete("/{path*?}", async args =>
+            Delete(@"^(?<path>[\w\/]+)$", async args =>
             {
                 var path = (string)args.path ?? "";
                 await DynDatabaseService.DeleteData(path);
@@ -82,7 +82,7 @@ namespace dynDBx.Modules
                 return Response.FromJsonString(new JObject().ToString());
             });
 
-            Get("/{path*?}", async args =>
+            Get(@"^(?<path>[\w\/]+)$", async args =>
             {
                 var path = (string)args.path ?? "";
                 var dataBundleJt = await DynDatabaseService.GetData(path);

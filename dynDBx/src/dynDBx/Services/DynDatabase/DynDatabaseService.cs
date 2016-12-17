@@ -51,7 +51,14 @@ namespace dynDBx.Services.DynDatabase
                             break;
 
                         case NodeDataOvewriteMode.Put:
-                            selectedNode.Replace(dataBundleRoot);
+                            if (selectedNode.Parent != null)
+                            {
+                                selectedNode.Replace(dataBundleRoot);
+                            }
+                            else // Root node
+                            {
+                                rootObjectToken = dataBundleRoot;
+                            }
                             break;
 
                         case NodeDataOvewriteMode.Push:
@@ -87,12 +94,12 @@ namespace dynDBx.Services.DynDatabase
                     }
                     else
                     {
-                        // This is a root token. Possibly add protection in the future
-                        // Replace with a fresh token
-                        removeTok = new JObject();
+                    // This is a root token. Possibly add protection in the future
+                    // Replace with a fresh token
+                    rootObjectToken = new JObject();
                     }
-                    // Update and store
-                    rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
+                // Update and store
+                rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
