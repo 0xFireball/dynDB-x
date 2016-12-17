@@ -4,7 +4,6 @@ using dynDBx.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,14 +49,17 @@ namespace dynDBx.Services.DynDatabase
                         case NodeDataOvewriteMode.Update:
                             selectedNode.Merge(dataBundleRoot);
                             break;
+
                         case NodeDataOvewriteMode.Put:
                             selectedNode.Replace(dataBundleRoot);
                             break;
+
                         case NodeDataOvewriteMode.Push:
                             // TODO!
                             throw new NotImplementedException();
                             break;
                     }
+                    // Update and store
                     rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
                     store.Update(rootObjectContainer);
                     trans.Commit();
@@ -75,8 +77,16 @@ namespace dynDBx.Services.DynDatabase
                 var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
-                var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
-                rootObjectToken.SelectToken(convTokenPath).Remove();
+                using (var trans = db.BeginTrans())
+                {
+                    var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
+                    var removeTok = rootObjectToken.SelectToken(convTokenPath);
+                    removeTok.Parent.Remove();
+                    // Update and store
+                    rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
+                    store.Update(rootObjectContainer);
+                    trans.Commit();
+                }
             });
         }
 

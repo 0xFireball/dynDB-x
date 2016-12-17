@@ -16,5 +16,10 @@ namespace dynDBx.Utilities
             var responseData = JsonConvert.SerializeObject(instance);
             return formatter.AsText(responseData, "application/json");
         }
+
+        public static Response FromJsonString(this IResponseFormatter formatter, string jsonString)
+        {
+            return formatter.AsText(jsonString, "application/json");
+        }
     }
 }

@@ -11,9 +11,9 @@ namespace dynDBx.Modules
     {
         public RemoteIOModule() : base("/io")
         {
-            Put("/{path*}", async args =>
+            Put("/{path*?}", async args =>
             {
-                var path = (string)args.path;
+                var path = (string)args.path ?? "";
                 // Deserialize data bundle
                 JObject dataBundleJ;
                 try
@@ -29,12 +29,12 @@ namespace dynDBx.Modules
                 await DynDatabaseService.PlaceData(dataBundleJ, path, NodeDataOvewriteMode.Put);
 
                 // Return data written
-                return dataBundleJ.ToString();
+                return Response.FromJsonString(dataBundleJ.ToString());
             });
 
-            Patch("/{path*}", async args =>
+            Patch("/{path*?}", async args =>
             {
-                var path = (string)args.path;
+                var path = (string)args.path ?? "";
                 // Deserialize data bundle
                 JObject dataBundleJ;
                 try
@@ -50,12 +50,12 @@ namespace dynDBx.Modules
                 await DynDatabaseService.PlaceData(dataBundleJ, path, NodeDataOvewriteMode.Update);
 
                 // Return data written
-                return dataBundleJ.ToString();
+                return Response.FromJsonString(dataBundleJ.ToString());
             });
 
-            Post("/{path*}", async args =>
+            Post("/{path*?}", async args =>
             {
-                var path = (string)args.path;
+                var path = (string)args.path ?? "";
                 // Deserialize data bundle
                 JObject dataBundleJ;
                 try
@@ -71,20 +71,20 @@ namespace dynDBx.Modules
                 await DynDatabaseService.PlaceData(dataBundleJ, path, NodeDataOvewriteMode.Push);
 
                 // Return data written
-                return dataBundleJ.ToString();
+                return Response.FromJsonString(dataBundleJ.ToString());
             });
 
-            Delete("/{path*}", async args =>
+            Delete("/{path*?}", async args =>
             {
-                var path = (string)args.path;
+                var path = (string)args.path ?? "";
                 await DynDatabaseService.DeleteData(path);
 
-                return Response.AsJsonNet(null);
+                return Response.FromJsonString(new JObject().ToString());
             });
 
-            Get("/{path*}", async args =>
+            Get("/{path*?}", async args =>
             {
-                var path = (string)args.path;
+                var path = (string)args.path ?? "";
                 var dataBundleJt = await DynDatabaseService.GetData(path);
 
                 if (dataBundleJt == null)
@@ -93,7 +93,7 @@ namespace dynDBx.Modules
                 }
 
                 //var dataBundle = dataBundleJt.ToObject<ExpandoObject>();
-                return dataBundleJt.ToString();
+                return Response.FromJsonString(dataBundleJt.ToString());
             });
         }
     }
