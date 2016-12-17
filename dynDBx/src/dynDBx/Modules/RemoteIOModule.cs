@@ -38,9 +38,9 @@ namespace dynDBx.Modules
             Get("/{path*}", async args =>
             {
                 var path = (string)args.path;
-                JObject dataBundleJ = await DynDatabaseService.GetData(path);
+                JToken dataBundleJt = await DynDatabaseService.GetData(path);
 
-                var dataBundle = dataBundleJ.ToObject<ExpandoObject>();
+                var dataBundle = dataBundleJt.ToObject<ExpandoObject>();
                 return Response.AsJsonNet((ExpandoObject)dataBundle);
             });
         }

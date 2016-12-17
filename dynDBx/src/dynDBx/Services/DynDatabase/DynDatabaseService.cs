@@ -34,9 +34,16 @@ namespace dynDBx.Services.DynDatabase
                 }
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
-                var rootObject = rootObjectToken.ToObject<ExpandoObject>();
+                //var rootObject = rootObjectToken.ToObject<ExpandoObject>();
                 using (var trans = db.BeginTrans())
                 {
+                    var selectedNode = rootObjectToken.SelectToken(convTokenPath);
+                    if (selectedNode == null)
+                    {
+                        // Get parent and create node
+                        var walker = new JTokenWalker(rootObjectToken, convTokenPath);
+                        selectedNode = walker.WalkAndCreateNode();
+                    }
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
@@ -44,7 +51,7 @@ namespace dynDBx.Services.DynDatabase
             });
         }
 
-        public static async Task<JObject> GetData(string path)
+        public static async Task<JToken> GetData(string path)
         {
             var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             return await Task.Run(() =>
@@ -54,7 +61,7 @@ namespace dynDBx.Services.DynDatabase
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
-                return rootObjectToken;
+                return rootObjectToken.SelectToken(convTokenPath);
             });
         }
     }
