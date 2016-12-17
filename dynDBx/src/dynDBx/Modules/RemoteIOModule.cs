@@ -3,6 +3,7 @@ using dynDBx.Utilities;
 using Nancy;
 using Nancy.Extensions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Dynamic;
 
 namespace dynDBx.Modules
@@ -15,21 +16,31 @@ namespace dynDBx.Modules
             {
                 var path = (string)args.path;
                 // Deserialize data bundle
-                dynamic dataBundle;
+                JObject dataBundleJ;
                 try
                 {
-                    dataBundle = JsonConvert.DeserializeObject<ExpandoObject>(Request.Body.AsString());
+                    dataBundleJ = JObject.Parse(Request.Body.AsString());
                 }
                 catch (JsonSerializationException)
                 {
                     return HttpStatusCode.BadRequest;
                 }
 
+                dynamic dataBundle = dataBundleJ.ToObject<ExpandoObject>();
+
                 // Write data
-                DynDatabaseService.WriteData(dataBundle, path);
+                DynDatabaseService.WriteData(dataBundleJ, dataBundle, path);
 
                 // Return data written
                 return Response.AsJsonNet((ExpandoObject)dataBundle);
+            });
+
+            Get("/{path*}", args =>
+            {
+                var path = (string)args.path;
+                
+
+                return HttpStatusCode.OK;
             });
         }
     }

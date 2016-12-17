@@ -6,6 +6,6 @@ namespace dynDBx.Models
     public class JsonObjectStoreContainer : DatabaseObject
     {
         public Guid ContainerId { get; set; }
-        public JObject JObject { get; set; }
+        public string JObject { get; set; }
     }
 }
