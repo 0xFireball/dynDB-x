@@ -5,6 +5,7 @@ using LiteDB;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Dynamic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace dynDBx.Services.DynDatabase
@@ -17,21 +18,23 @@ namespace dynDBx.Services.DynDatabase
             await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
+                Guid baseContainerGuid;
                 var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
                 if (store.Count() == 0)
                 {
                     using (var trans = db.BeginTrans())
                     {
                         var newRoot = new JObject();
+                        baseContainerGuid = Guid.NewGuid();
                         store.Insert(new JsonObjectStoreContainer
                         {
-                            ContainerId = Guid.NewGuid(),
+                            ContainerId = baseContainerGuid,
                             JObject = newRoot,
                         });
                         trans.Commit();
                     }
                 }
-                var rootObjectContainer = store.FindOne(Query.All());
+                var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var rootObject = (JObject)rootObjectContainer.JObject;
                 using (var trans = db.BeginTrans())
                 {
