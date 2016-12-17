@@ -81,7 +81,16 @@ namespace dynDBx.Services.DynDatabase
                 {
                     var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
                     var removeTok = rootObjectToken.SelectToken(convTokenPath);
-                    removeTok.Parent.Remove();
+                    if (removeTok.Parent != null)
+                    {
+                        removeTok.Parent.Remove();
+                    }
+                    else
+                    {
+                        // This is a root token. Possibly add protection in the future
+                        // Replace with a fresh token
+                        removeTok = new JObject();
+                    }
                     // Update and store
                     rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
                     store.Update(rootObjectContainer);
