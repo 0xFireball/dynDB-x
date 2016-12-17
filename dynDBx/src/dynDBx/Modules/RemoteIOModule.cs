@@ -12,7 +12,7 @@ namespace dynDBx.Modules
     {
         public RemoteIOModule() : base("/io")
         {
-            Put("/{path*}", args =>
+            Put("/{path*}", async args =>
             {
                 var path = (string)args.path;
                 // Deserialize data bundle
@@ -29,18 +29,19 @@ namespace dynDBx.Modules
                 dynamic dataBundle = dataBundleJ.ToObject<ExpandoObject>();
 
                 // Write data
-                DynDatabaseService.WriteData(dataBundleJ, dataBundle, path);
+                await DynDatabaseService.PutData(dataBundleJ, dataBundle, path);
 
                 // Return data written
                 return Response.AsJsonNet((ExpandoObject)dataBundle);
             });
 
-            Get("/{path*}", args =>
+            Get("/{path*}", async args =>
             {
                 var path = (string)args.path;
-                
+                JObject dataBundleJ = await DynDatabaseService.GetData(path);
 
-                return HttpStatusCode.OK;
+                var dataBundle = dataBundleJ.ToObject<ExpandoObject>();
+                return Response.AsJsonNet((ExpandoObject)dataBundle);
             });
         }
     }

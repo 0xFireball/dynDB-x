@@ -12,23 +12,21 @@ namespace dynDBx.Services.DynDatabase
 {
     public static class DynDatabaseService
     {
-        public static async Task WriteData(JObject dataBundleRoot, ExpandoObject dataBundle, string path)
+        public static async Task PutData(JObject dataBundleRoot, ExpandoObject dataBundle, string path)
         {
             var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
-                Guid baseContainerGuid;
                 var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
                 if (store.Count() == 0)
                 {
                     using (var trans = db.BeginTrans())
                     {
                         var newRoot = new JObject();
-                        baseContainerGuid = Guid.NewGuid();
                         store.Insert(new JsonObjectStoreContainer
                         {
-                            ContainerId = baseContainerGuid,
+                            ContainerId = Guid.NewGuid(),
                             JObject = JsonConvert.SerializeObject(dataBundle)
                         });
                         trans.Commit();
@@ -43,6 +41,20 @@ namespace dynDBx.Services.DynDatabase
                     trans.Commit();
                 }
                 // Data was written
+            });
+        }
+
+        public static async Task<JObject> GetData(string path)
+        {
+            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
+            return await Task.Run(() =>
+            {
+                var db = DatabaseAccessService.OpenOrCreateDefault();
+                var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
+
+                var rootObjectContainer = store.FindAll().FirstOrDefault();
+                var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
+                return rootObjectToken;
             });
         }
     }
