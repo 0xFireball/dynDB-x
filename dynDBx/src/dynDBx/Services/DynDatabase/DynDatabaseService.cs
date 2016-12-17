@@ -12,7 +12,7 @@ namespace dynDBx.Services.DynDatabase
 {
     public static class DynDatabaseService
     {
-        public static async Task PutData(JObject dataBundleRoot, string path)
+        public static async Task PlaceData(JObject dataBundleRoot, string path, NodeDataOvewriteMode ovewriteMode)
         {
             var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             await Task.Run(() =>
@@ -45,12 +45,38 @@ namespace dynDBx.Services.DynDatabase
                         selectedNode = walker.WalkAndCreateNode();
                     }
                     // Put in the new data
-                    selectedNode.Merge(dataBundleRoot);
+                    switch (ovewriteMode)
+                    {
+                        case NodeDataOvewriteMode.Update:
+                            selectedNode.Merge(dataBundleRoot);
+                            break;
+                        case NodeDataOvewriteMode.Put:
+                            selectedNode.Replace(dataBundleRoot);
+                            break;
+                        case NodeDataOvewriteMode.Push:
+                            // TODO!
+                            throw new NotImplementedException();
+                            break;
+                    }
                     rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
                 // Data was written
+            });
+        }
+
+        public static async Task DeleteData(string path)
+        {
+            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
+            await Task.Run(() =>
+            {
+                var db = DatabaseAccessService.OpenOrCreateDefault();
+                var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
+
+                var rootObjectContainer = store.FindAll().FirstOrDefault();
+                var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
+                rootObjectToken.SelectToken(convTokenPath).Remove();
             });
         }
 

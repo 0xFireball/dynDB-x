@@ -16,6 +16,18 @@ namespace dynDBx.Utilities
             _rootToken = rootObj;
         }
 
+        public string[] QueryFragments => queryFragments;
+
+        /// <summary>
+        /// Get the parent a certain number of levels up
+        /// </summary>
+        /// <param name="levels"></param>
+        /// <returns></returns>
+        public string GetQueryParent(int levels = 1)
+        {
+            return string.Join(".", queryFragments.Take(queryFragments.Length - levels));
+        }
+
         /// <summary>
         /// Walk through the token, create paths, and finally create the node
         /// </summary>

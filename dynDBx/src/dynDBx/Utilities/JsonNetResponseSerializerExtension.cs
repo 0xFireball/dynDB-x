@@ -13,7 +13,7 @@ namespace dynDBx.Utilities
 
         public static Response AsJsonNet(this IResponseFormatter formatter, object instance)
         {
-            var responseData = (string)JsonConvert.SerializeObject(instance);
+            var responseData = JsonConvert.SerializeObject(instance);
             return formatter.AsText(responseData, "application/json");
         }
     }
