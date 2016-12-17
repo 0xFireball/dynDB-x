@@ -7,13 +7,13 @@ namespace dynDBx.Utilities
     {
         private string originalQuery;
         private string[] queryFragments;
-        private JToken _rootToken;
+        private JObject _rootToken;
 
-        public JTokenWalker(JToken rootToken, string queryPath)
+        public JTokenWalker(JObject rootObj, string queryPath)
         {
             originalQuery = queryPath;
             queryFragments = queryPath.Split('.');
-            _rootToken = rootToken;
+            _rootToken = rootObj;
         }
 
         /// <summary>
@@ -33,6 +33,12 @@ namespace dynDBx.Utilities
                     parentLevel = i;
                     break;
                 }
+            }
+            if (parentLevel == queryFragments.Length) // Nothing was found
+            {
+                parentLevel--; // decrement
+                var newProp = new JProperty(queryFragments[0], new JObject());
+                _rootToken.Add(newProp);
             }
             var foundParent = (JObject)_rootToken.SelectToken(string.Join(".", queryFragments.Take(queryFragments.Length - parentLevel)));
             JObject lastParent = foundParent;

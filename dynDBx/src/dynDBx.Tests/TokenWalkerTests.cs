@@ -16,5 +16,16 @@ namespace dynDBx.Tests
             var node = tokWalker.WalkAndCreateNode();
             Assert.NotNull(node);
         }
+
+        [Fact]
+        public void CanUseRootAsParent()
+        {
+            JObject root = new JObject(
+                new JProperty("lol", new JObject())
+            );
+            var tokWalker = new JTokenWalker(root, "blob.food.bread.tasty");
+            var node = tokWalker.WalkAndCreateNode();
+            Assert.NotNull(node);
+        }
     }
 }
