@@ -44,7 +44,9 @@ namespace dynDBx.Services.DynDatabase
                         var walker = new JTokenWalker(rootObjectToken, convTokenPath);
                         selectedNode = walker.WalkAndCreateNode();
                     }
-                    selectedNode.Add(dataBundleRoot);
+                    // Put in the new data
+                    selectedNode.Merge(dataBundleRoot);
+                    rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
@@ -52,7 +54,7 @@ namespace dynDBx.Services.DynDatabase
             });
         }
 
-        public static async Task<JToken> GetData(string path)
+        public static async Task<JObject> GetData(string path)
         {
             var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             return await Task.Run(() =>
@@ -62,7 +64,7 @@ namespace dynDBx.Services.DynDatabase
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
-                return rootObjectToken.SelectToken(convTokenPath);
+                return (JObject)rootObjectToken.SelectToken(convTokenPath);
             });
         }
     }
