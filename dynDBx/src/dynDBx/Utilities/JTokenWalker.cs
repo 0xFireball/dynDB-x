@@ -19,9 +19,9 @@ namespace dynDBx.Utilities
         /// <summary>
         /// Walk through the token, create paths, and finally create the node
         /// </summary>
-        public JToken WalkAndCreateNode()
+        public JObject WalkAndCreateNode()
         {
-            JToken result = null;
+            JObject result = null;
             int parentLevel = queryFragments.Length;
             for (int i = 0; i < parentLevel; i++)
             {
@@ -51,7 +51,7 @@ namespace dynDBx.Utilities
                 lastParent.Add(newProp);
                 lastParent = newObj;
             }
-            result = _rootToken.SelectToken(originalQuery);
+            result = (JObject)_rootToken.SelectToken(originalQuery);
             return result;
         }
     }

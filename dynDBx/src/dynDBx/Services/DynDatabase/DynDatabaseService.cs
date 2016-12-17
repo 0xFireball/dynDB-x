@@ -37,13 +37,14 @@ namespace dynDBx.Services.DynDatabase
                 //var rootObject = rootObjectToken.ToObject<ExpandoObject>();
                 using (var trans = db.BeginTrans())
                 {
-                    var selectedNode = rootObjectToken.SelectToken(convTokenPath);
+                    var selectedNode = (JObject)rootObjectToken.SelectToken(convTokenPath);
                     if (selectedNode == null)
                     {
-                        // Get parent and create node
+                        // Get parent and create node with walker
                         var walker = new JTokenWalker(rootObjectToken, convTokenPath);
                         selectedNode = walker.WalkAndCreateNode();
                     }
+                    selectedNode.Add(dataBundleRoot);
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
