@@ -1,7 +1,6 @@
 ﻿using dynDBx.Models;
 using dynDBx.Services.Database;
 using dynDBx.Utilities;
-using LiteDB;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -31,20 +30,21 @@ namespace dynDBx.Services.DynDatabase
                         store.Insert(new JsonObjectStoreContainer
                         {
                             ContainerId = baseContainerGuid,
-                            //JObject = newRoot,
-                            JObject = JsonConvert.SerializeObject(dataBundle)
+                            JObject = newRoot
+                            //JObject = JsonConvert.SerializeObject(dataBundle)
                         });
                         trans.Commit();
                     }
                 }
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
-                var rootObject = JsonConvert.DeserializeObject<ExpandoObject>(rootObjectContainer.JObject);
+                var rootObject = rootObjectContainer.JObject; 
+                //JsonConvert.DeserializeObject<ExpandoObject>(rootObjectContainer.JObject);
                 using (var trans = db.BeginTrans())
                 {
-                //    var existingObject = rootObject.SelectToken(convTokenPath);
-                //    if (existingObject == null)
-                //    {
-                //    }
+                    //    var existingObject = rootObject.SelectToken(convTokenPath);
+                    //    if (existingObject == null)
+                    //    {
+                    //    }
                     trans.Commit();
                 }
                 // Data was written
