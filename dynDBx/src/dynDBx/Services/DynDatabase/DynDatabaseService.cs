@@ -27,7 +27,7 @@ namespace dynDBx.Services.DynDatabase
                         store.Insert(new JsonObjectStoreContainer
                         {
                             ContainerId = Guid.NewGuid(),
-                            JObject = JsonConvert.SerializeObject(dataBundle)
+                            JObject = dataBundleRoot.ToString(Formatting.None)
                         });
                         trans.Commit();
                     }

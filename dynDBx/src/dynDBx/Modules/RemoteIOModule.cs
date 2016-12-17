@@ -38,6 +38,11 @@ namespace dynDBx.Modules
                 var path = (string)args.path;
                 var dataBundleJt = await DynDatabaseService.GetData(path);
 
+                if (dataBundleJt == null)
+                {
+                    return HttpStatusCode.NotFound;
+                }
+
                 //var dataBundle = dataBundleJt.ToObject<ExpandoObject>();
                 return dataBundleJt.ToString();
             });
