@@ -12,7 +12,7 @@ namespace dynDBx.Services.DynDatabase
 {
     public static class DynDatabaseService
     {
-        public static async Task PutData(JObject dataBundleRoot, ExpandoObject dataBundle, string path)
+        public static async Task PutData(JObject dataBundleRoot, string path)
         {
             var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             await Task.Run(() =>

@@ -26,13 +26,11 @@ namespace dynDBx.Modules
                     return HttpStatusCode.BadRequest;
                 }
 
-                dynamic dataBundle = dataBundleJ.ToObject<ExpandoObject>();
-
                 // Write data
-                await DynDatabaseService.PutData(dataBundleJ, dataBundle, path);
+                await DynDatabaseService.PutData(dataBundleJ, path);
 
                 // Return data written
-                return Response.AsJsonNet((ExpandoObject)dataBundle);
+                return dataBundleJ.ToString();
             });
 
             Get("/{path*}", async args =>
@@ -40,8 +38,8 @@ namespace dynDBx.Modules
                 var path = (string)args.path;
                 var dataBundleJt = await DynDatabaseService.GetData(path);
 
-                var dataBundle = dataBundleJt.ToObject<ExpandoObject>();
-                return Response.AsJsonNet(dataBundle);
+                //var dataBundle = dataBundleJt.ToObject<ExpandoObject>();
+                return dataBundleJt.ToString();
             });
         }
     }
