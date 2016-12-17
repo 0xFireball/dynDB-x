@@ -35,11 +35,15 @@ namespace dynDBx.Utilities
                 }
             }
             var foundParent = (JObject)_rootToken.SelectToken(string.Join(".", queryFragments.Take(queryFragments.Length - parentLevel)));
+            JObject lastParent = foundParent;
             for (int i = parentLevel; i > 0; i--)
             {
                 var nextNodeKey = queryFragments[queryFragments.Length - i];
                 // Create next node
-                foundParent.Add(nextNodeKey, new JObject());
+                var newObj = new JObject();
+                var newProp = new JProperty(nextNodeKey, newObj);
+                lastParent.Add(newProp);
+                lastParent = newObj;
             }
             result = _rootToken.SelectToken(originalQuery);
             return result;
