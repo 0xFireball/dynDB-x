@@ -2,6 +2,7 @@
 using dynDBx.Services.Database;
 using dynDBx.Utilities;
 using IridiumIon.JsonFlat2;
+using IridiumIon.JsonFlat2.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;

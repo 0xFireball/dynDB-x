@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace IridiumIon.JsonFlat2
+namespace IridiumIon.JsonFlat2.Internal
 {
     /// <summary>
     /// Based on https://codedump.io/share/w4CmxtkbwSGD/1/how-to-unflatten-flattened-json-in-c

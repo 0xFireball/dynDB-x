@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace IridiumIon.JsonFlat2
+namespace IridiumIon.JsonFlat2.Internal
 {
     public static class StringUtils
     {

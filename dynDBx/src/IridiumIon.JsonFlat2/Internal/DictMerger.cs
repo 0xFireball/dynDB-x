@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IridiumIon.JsonFlat2
+namespace IridiumIon.JsonFlat2.Internal
 {
     public static class DictMerger
     {
