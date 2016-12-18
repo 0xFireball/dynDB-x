@@ -14,6 +14,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dynDBx", "src\dynDBx\dynDBx
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "dynDBx.Tests", "src\dynDBx.Tests\dynDBx.Tests.xproj", "{BAC3BAE1-CDE2-47BC-B22E-68054BE82A2B}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IridiumIon.JsonFlat2", "src\IridiumIon.JsonFlat2\IridiumIon.JsonFlat2.xproj", "{00945B9F-F0D9-43A7-B545-3BECC66302A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{BAC3BAE1-CDE2-47BC-B22E-68054BE82A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAC3BAE1-CDE2-47BC-B22E-68054BE82A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAC3BAE1-CDE2-47BC-B22E-68054BE82A2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00945B9F-F0D9-43A7-B545-3BECC66302A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00945B9F-F0D9-43A7-B545-3BECC66302A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00945B9F-F0D9-43A7-B545-3BECC66302A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00945B9F-F0D9-43A7-B545-3BECC66302A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -35,5 +41,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{555EDF04-B836-4CD5-A1C8-3B2C7456E24E} = {D11BB801-7392-4A5B-846B-A39FBE75B361}
 		{BAC3BAE1-CDE2-47BC-B22E-68054BE82A2B} = {D11BB801-7392-4A5B-846B-A39FBE75B361}
+		{00945B9F-F0D9-43A7-B545-3BECC66302A9} = {D11BB801-7392-4A5B-846B-A39FBE75B361}
 	EndGlobalSection
 EndGlobal
