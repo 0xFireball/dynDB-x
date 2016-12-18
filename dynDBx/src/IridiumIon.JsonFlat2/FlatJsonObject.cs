@@ -1,6 +1,7 @@
 ﻿using IridiumIon.JsonFlat2.Internal;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IridiumIon.JsonFlat2
 {
@@ -23,6 +24,11 @@ namespace IridiumIon.JsonFlat2
         public FlatJsonObject(Dictionary<string, string> flattenedDict)
         {
             Dictionary = flattenedDict;
+        }
+
+        public void Merge(params FlatJsonObject[] other)
+        {
+            Dictionary.MergeInto(other.Select(o => o.Dictionary).ToArray());
         }
 
         public JObject Unflatten()

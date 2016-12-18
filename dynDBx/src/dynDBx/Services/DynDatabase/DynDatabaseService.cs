@@ -35,7 +35,7 @@ namespace dynDBx.Services.DynDatabase
                     }
                 }
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
-                var flattenedRootObject = rootObjectContainer.FlattenedJObject;
+                var flattenedRootObject = new FlatJsonObject(rootObjectContainer.FlattenedJObject);
                 //var rootObjectJ = JsonFlattener.UnflattenJObject(flattenedRootObject);
 
                 using (var trans = db.BeginTrans())
@@ -47,7 +47,7 @@ namespace dynDBx.Services.DynDatabase
                             {
                                 // Flatten input bundle
                                 var flattenedBundle = new FlatJsonObject(dataBundleRoot, convTokenPrfx);
-                                flattenedRootObject.MergeInto(flattenedBundle);
+                                flattenedRootObject.Merge(flattenedBundle);
                             }
 
                             break;
@@ -59,7 +59,7 @@ namespace dynDBx.Services.DynDatabase
                                 // Remove existing data
                                 FlatJsonTools.RemoveNode(convTokenPath, flattenedRootObject);
                                 // Add new data
-                                flattenedRootObject.MergeInto(flattenedBundle);
+                                flattenedRootObject.Merge(flattenedBundle);
                             }
                             break;
 
@@ -70,8 +70,8 @@ namespace dynDBx.Services.DynDatabase
                                 // Create flattened bundle with pushId added to prefix
                                 convTokenPrfx = DynPathUtilities.AppendToTokenPrefix(convTokenPrfx, pushId);
                                 // Flatten input bundle
-                                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
-                                flattenedRootObject.MergeInto(flattenedBundle);
+                                var flattenedBundle = new FlatJsonObject(dataBundleRoot, convTokenPrfx);
+                                flattenedRootObject.Merge(flattenedBundle);
                                 result = pushId;
                             }
                             break;
