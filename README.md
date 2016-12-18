@@ -54,18 +54,53 @@ would be to flatten the JSON object and store a hashtable
 representing this data. For example, see the following JSON object
 and its flattened representation:
 
+JSON string:
+
 ```json
 {
     "name": "Bob",
-    "age": 30,
     "pets": [
         "dog",
         "cat"
-    ]
+    ],
+    "info": {
+        "age": 30,
+        "secrets": [
+            9999
+        ]
+    }
 }
 ```
 
-### Much better solution (improvement!)
+Flattened representation (hashtable):
+
+```text
+name: "Bob"
+pets[0]: "dog"
+pets[1]: "cat"
+info.age: 30
+info.secrets[0]: 9999
+```
+
+So now, instead of serializing/deserializing, we just store
+an empty hashtable, and merge/overwrite it with new data! This
+is far more efficient, as you can perform most operations on the
+flattened representation without unflattening and deserializing
+the data!
+
+For example, to insert an object, you would just need to create
+a new flattened hashtable representation of the new data with the insertion
+path prepended to the flattened key. Then you could merge that hashtable with
+the root object, and now you have inserted an object!
+
+To delete a node, you simply find keys with a matching prefix and remove
+them from the hashtable! All these operations would normally be done
+on a deserialized representation.
+
+The only time the data needs to be deserialized is when the user queries
+for raw JSON!
+
+### Much better solution (improvements!)
 
 The previously described is definitely not the best solution, though it is relatively
 easy to implement. The problems with this approach are:
