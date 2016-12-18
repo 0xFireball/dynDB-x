@@ -18,19 +18,12 @@ namespace IridiumIon.JsonFlat2
 
         public static JObject UnflattenJObject(Dictionary<string, string> flattenedObj)
         {
-            JContainer result = null;
-            JsonMergeSettings setting = new JsonMergeSettings();
-            setting.MergeArrayHandling = MergeArrayHandling.Merge;
+            JContainer result = new JObject();
+            JsonMergeSettings settings = new JsonMergeSettings();
+            settings.MergeArrayHandling = MergeArrayHandling.Merge;
             foreach (var pathValue in flattenedObj)
             {
-                if (result == null)
-                {
-                    result = UnflattenSingle(pathValue);
-                }
-                else
-                {
-                    result.Merge(UnflattenSingle(pathValue), setting);
-                }
+                result.Merge(UnflattenSingle(pathValue), settings);
             }
             return result as JObject;
         }
