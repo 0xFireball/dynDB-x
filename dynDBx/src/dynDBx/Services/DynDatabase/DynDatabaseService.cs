@@ -1,7 +1,6 @@
 ﻿using dynDBx.Models;
 using dynDBx.Services.Database;
 using dynDBx.Utilities;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -63,7 +62,7 @@ namespace dynDBx.Services.DynDatabase
                             break;
                     }
                     // Update and store
-                    rootObjectContainer.FlattenedJObject = rootObjectToken.ToString(Formatting.None);
+                    rootObjectContainer.FlattenedJObject = flattenedRootObject;
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
@@ -73,33 +72,34 @@ namespace dynDBx.Services.DynDatabase
 
         public static async Task DeleteData(string path)
         {
-            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
-            await Task.Run(() =>
-            {
-                var db = DatabaseAccessService.OpenOrCreateDefault();
-                var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
+            throw new NotImplementedException();
+            //var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
+            //await Task.Run(() =>
+            //{
+            //    var db = DatabaseAccessService.OpenOrCreateDefault();
+            //    var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
 
-                var rootObjectContainer = store.FindAll().FirstOrDefault();
-                using (var trans = db.BeginTrans())
-                {
-                    var rootObjectToken = JObject.Parse(rootObjectContainer.FlattenedJObject);
-                    var removeTok = rootObjectToken.SelectToken(convTokenPath);
-                    if (removeTok.Parent != null)
-                    {
-                        removeTok.Parent.Remove();
-                    }
-                    else
-                    {
-                    // This is a root token. Possibly add protection in the future
-                    // Replace with a fresh token
-                    rootObjectToken = new JObject();
-                    }
-                // Update and store
-                rootObjectContainer.FlattenedJObject = rootObjectToken.ToString(Formatting.None);
-                    store.Update(rootObjectContainer);
-                    trans.Commit();
-                }
-            });
+            //    var rootObjectContainer = store.FindAll().FirstOrDefault();
+            //    using (var trans = db.BeginTrans())
+            //    {
+            //        var rootObjectToken = JObject.Parse(rootObjectContainer.FlattenedJObject);
+            //        var removeTok = rootObjectToken.SelectToken(convTokenPath);
+            //        if (removeTok.Parent != null)
+            //        {
+            //            removeTok.Parent.Remove();
+            //        }
+            //        else
+            //        {
+            //            // This is a root token. Possibly add protection in the future
+            //            // Replace with a fresh token
+            //            rootObjectToken = new JObject();
+            //        }
+            //        // Update and store
+            //        rootObjectContainer.FlattenedJObject = rootObjectToken.ToString(Formatting.None);
+            //        store.Update(rootObjectContainer);
+            //        trans.Commit();
+            //    }
+            //});
         }
 
         public static async Task<JObject> GetData(string path)
@@ -111,8 +111,8 @@ namespace dynDBx.Services.DynDatabase
                 var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
-                var rootObjectToken = JObject.Parse(rootObjectContainer.FlattenedJObject);
-                return (JObject)rootObjectToken.SelectToken(convTokenPath);
+                var unflattenedJObj = JsonFlattener.UnflattenJObject(rootObjectContainer.FlattenedJObject);
+                return (JObject)unflattenedJObj.SelectToken(convTokenPath);
             });
         }
     }
