@@ -13,6 +13,7 @@ namespace dynDBx.Services.DynDatabase
     {
         public static async Task PlaceData(JObject dataBundleRoot, string path, NodeDataOvewriteMode ovewriteMode)
         {
+            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             var convTokenPrfx = DynPathUtilities.ConvertUriPathToTokenPrefix(path);
             await Task.Run(() =>
             {
@@ -42,19 +43,14 @@ namespace dynDBx.Services.DynDatabase
                     switch (ovewriteMode)
                     {
                         case NodeDataOvewriteMode.Update:
-                            //selectedNode.Merge(dataBundleRoot);
                             flattenedRootObject.MergeInto(flattenedBundle);
                             break;
 
                         case NodeDataOvewriteMode.Put:
-                            //if (selectedNode.Parent != null)
-                            //{
-                            //    selectedNode.Replace(dataBundleRoot);
-                            //}
-                            //else // Root node
-                            //{
-                            //    rootObjectToken = dataBundleRoot;
-                            //}
+                            // Remove existing data
+                            FlatJsonTools.RemoveNode(convTokenPath, flattenedRootObject);
+                            // Add new data
+                            flattenedRootObject.MergeInto(flattenedBundle);
                             break;
 
                         case NodeDataOvewriteMode.Push:
