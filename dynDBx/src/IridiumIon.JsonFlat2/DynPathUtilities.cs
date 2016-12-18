@@ -1,4 +1,4 @@
-﻿namespace dynDBx.Utilities
+﻿namespace IridiumIon.JsonFlat2
 {
     public static class DynPathUtilities
     {
