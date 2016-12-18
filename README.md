@@ -33,6 +33,8 @@ those of the Firebase Database and its API.
 
 ## How it works
 
+### Quick intro to bad solution
+
 The obvious way to build a JSON-backed database that is
 backed by a key-value store would be to store serialized objects
 in the database, then deserialize them when they are needed.
@@ -43,7 +45,29 @@ amount of data grows, the time for these operations increases
 significantly. In addition, memory usage will quickly go out
 of hand with large databases.
 
-This is definitely not the best solution, though it is relatively
+### Better solution
+
+A better, but still not ideal solution would be the one
+that this project implements. See the section below for areas
+to improve that I have identified for now. This approach
+would be to flatten the JSON object and store a hashtable
+representing this data. For example, see the following JSON object
+and its flattened representation:
+
+```json
+{
+    "name": "Bob",
+    "age": 30,
+    "pets": [
+        "dog",
+        "cat"
+    ]
+}
+```
+
+### Much better solution (improvement!)
+
+The previously described is definitely not the best solution, though it is relatively
 easy to implement. The problems with this approach are:
 
 - Memory usage for the hashtable storing values is still high;
