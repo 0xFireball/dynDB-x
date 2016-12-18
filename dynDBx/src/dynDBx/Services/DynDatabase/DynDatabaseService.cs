@@ -43,7 +43,7 @@ namespace dynDBx.Services.DynDatabase
                     {
                         case NodeDataOvewriteMode.Update:
                             //selectedNode.Merge(dataBundleRoot);
-
+                            flattenedRootObject.MergeInto(flattenedBundle);
                             break;
 
                         case NodeDataOvewriteMode.Put:
