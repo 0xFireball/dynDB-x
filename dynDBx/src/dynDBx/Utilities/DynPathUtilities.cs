@@ -21,5 +21,10 @@
             if (tokPath.Length > 0) tokPath += ".";
             return tokPath;
         }
+
+        public static string AppendToTokenPrefix(string convTokenPrfx, string pushId)
+        {
+            return convTokenPrfx + pushId + ".";
+        }
     }
 }

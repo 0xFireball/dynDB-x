@@ -35,7 +35,6 @@ namespace dynDBx.Services.DynDatabase
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var flattenedRootObject = rootObjectContainer.FlattenedJObject;
                 //var rootObjectJ = JsonFlattener.UnflattenJObject(flattenedRootObject);
-                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
 
                 using (var trans = db.BeginTrans())
                 {
@@ -43,21 +42,35 @@ namespace dynDBx.Services.DynDatabase
                     switch (ovewriteMode)
                     {
                         case NodeDataOvewriteMode.Update:
-                            flattenedRootObject.MergeInto(flattenedBundle);
+                            {
+                                // Flatten input bundle
+                                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
+                                flattenedRootObject.MergeInto(flattenedBundle);
+                            }
+
                             break;
 
                         case NodeDataOvewriteMode.Put:
-                            // Remove existing data
-                            FlatJsonTools.RemoveNode(convTokenPath, flattenedRootObject);
-                            // Add new data
-                            flattenedRootObject.MergeInto(flattenedBundle);
+                            {
+                                // Flatten input bundle
+                                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
+                                // Remove existing data
+                                FlatJsonTools.RemoveNode(convTokenPath, flattenedRootObject);
+                                // Add new data
+                                flattenedRootObject.MergeInto(flattenedBundle);
+                            }
                             break;
 
                         case NodeDataOvewriteMode.Push:
-                            // TODO!
-                            // Use the Firebase Push ID algorithm
-                            var pushId = PushIdGenerator.GeneratePushId();
-                            throw new NotImplementedException();
+                            {
+                                // Use the Firebase Push ID algorithm
+                                var pushId = PushIdGenerator.GeneratePushId();
+                                // Create flattened bundle with pushId added to prefix
+                                convTokenPrfx = DynPathUtilities.AppendToTokenPrefix(convTokenPrfx, pushId);
+                                // Flatten input bundle
+                                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
+                                flattenedRootObject.MergeInto(flattenedBundle);
+                            }
                             break;
                     }
                     // Update and store
