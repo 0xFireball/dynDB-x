@@ -19,7 +19,7 @@ namespace IridiumIon.JsonFlat2
         public static JObject UnflattenJObject(Dictionary<string, string> flattenedObj)
         {
             JContainer result = new JObject();
-            JsonMergeSettings settings = new JsonMergeSettings
+            var settings = new JsonMergeSettings
             {
                 MergeArrayHandling = MergeArrayHandling.Merge
             };
@@ -37,10 +37,10 @@ namespace IridiumIon.JsonFlat2
             var pathSegments = SplitPath(path);
 
             JContainer lastItem = null;
-            //build from leaf to root
+            // build from leaf to root
             foreach (var pathSegment in pathSegments.Reverse())
             {
-                var type = GetJSONType(pathSegment);
+                var type = GetJsonType(pathSegment);
                 switch (type)
                 {
                     case JsonKind.Object:
@@ -58,7 +58,7 @@ namespace IridiumIon.JsonFlat2
 
                     case JsonKind.Array:
                         var array = new JArray();
-                        int index = GetArrayIndex(pathSegment);
+                        var index = GetArrayIndex(pathSegment);
                         array = FillEmpty(array, index);
                         if (lastItem == null)
                         {
@@ -77,8 +77,8 @@ namespace IridiumIon.JsonFlat2
 
         private static IList<string> SplitPath(string path)
         {
-            IList<string> result = new List<string>();
-            Regex reg = new Regex(@"(?!\.)([^. ^\[\]]+)|(?!\[)(\d+)(?=\])");
+            var result = new List<string>();
+            var reg = new Regex(@"(?!\.)([^. ^\[\]]+)|(?!\[)(\d+)(?=\])");
             foreach (Match match in reg.Matches(path))
             {
                 result.Add(match.Value);
@@ -95,7 +95,7 @@ namespace IridiumIon.JsonFlat2
             return array;
         }
 
-        private static JsonKind GetJSONType(string pathSegment)
+        private static JsonKind GetJsonType(string pathSegment)
         {
             int x;
             return int.TryParse(pathSegment, out x) ? JsonKind.Array : JsonKind.Object;
