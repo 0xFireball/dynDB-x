@@ -55,6 +55,8 @@ namespace dynDBx.Services.DynDatabase
 
                         case NodeDataOvewriteMode.Push:
                             // TODO!
+                            // Use the Firebase Push ID algorithm
+                            var pushId = PushIdGenerator.GeneratePushId();
                             throw new NotImplementedException();
                             break;
                     }
