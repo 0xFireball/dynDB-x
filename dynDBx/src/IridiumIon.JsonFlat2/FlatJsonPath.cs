@@ -1,6 +1,6 @@
 ﻿namespace IridiumIon.JsonFlat2
 {
-    public static class DynPathUtilities
+    public static class FlatJsonPath
     {
         public static string[] ConvertUriPathToSegments(string uriPath)
         {

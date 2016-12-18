@@ -15,8 +15,8 @@ namespace dynDBx.Services.DynDatabase
         public static async Task<string> PlaceData(JObject dataBundleRoot, string path, NodeDataOvewriteMode ovewriteMode)
         {
             string result = null; // Optionally used to return a result
-            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
-            var convTokenPrfx = DynPathUtilities.ConvertUriPathToTokenPrefix(path);
+            var convTokenPath = FlatJsonPath.ConvertUriPathToTokenPath(path);
+            var convTokenPrfx = FlatJsonPath.ConvertUriPathToTokenPrefix(path);
             await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
@@ -68,7 +68,7 @@ namespace dynDBx.Services.DynDatabase
                                 // Use the Firebase Push ID algorithm
                                 var pushId = PushIdGenerator.GeneratePushId();
                                 // Create flattened bundle with pushId added to prefix
-                                convTokenPrfx = DynPathUtilities.AppendToTokenPrefix(convTokenPrfx, pushId);
+                                convTokenPrfx = FlatJsonPath.AppendToTokenPrefix(convTokenPrfx, pushId);
                                 // Flatten input bundle
                                 var flattenedBundle = new FlatJsonObject(dataBundleRoot, convTokenPrfx);
                                 flattenedRootObject.Merge(flattenedBundle);
@@ -88,7 +88,7 @@ namespace dynDBx.Services.DynDatabase
 
         public static async Task DeleteData(string path)
         {
-            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
+            var convTokenPath = FlatJsonPath.ConvertUriPathToTokenPath(path);
             await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
@@ -109,7 +109,7 @@ namespace dynDBx.Services.DynDatabase
 
         public static async Task<JToken> GetData(string path)
         {
-            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
+            var convTokenPath = FlatJsonPath.ConvertUriPathToTokenPath(path);
             return await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
