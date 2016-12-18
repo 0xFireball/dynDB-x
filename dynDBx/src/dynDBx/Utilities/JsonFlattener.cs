@@ -24,7 +24,7 @@ namespace dynDBx.Utilities
 
         public static JObject UnflattenJObject(Dictionary<string, string> flattenedObj)
         {
-            return JObject.FromObject(flattenedObj);
+            return JsonUnflattenerHelper.UnflattenJObject(flattenedObj);
         }
     }
 }
