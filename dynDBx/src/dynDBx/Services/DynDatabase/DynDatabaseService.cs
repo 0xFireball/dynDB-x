@@ -26,39 +26,35 @@ namespace dynDBx.Services.DynDatabase
                         store.Insert(new JsonObjectStoreContainer
                         {
                             ContainerId = Guid.NewGuid(),
-                            JObject = dataBundleRoot.ToString(Formatting.None)
+                            FlattenedJObject = JsonFlattener.FlattenJObject(dataBundleRoot)
                         });
                         trans.Commit();
                     }
                 }
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
-                var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
-                //var rootObject = rootObjectToken.ToObject<ExpandoObject>();
+                var flattenedRootObject = rootObjectContainer.FlattenedJObject;
+                //var rootObjectJ = JsonFlattener.UnflattenJObject(flattenedRootObject);
+                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot);
+
                 using (var trans = db.BeginTrans())
                 {
-                    var selectedNode = (JObject)rootObjectToken.SelectToken(convTokenPath);
-                    if (selectedNode == null)
-                    {
-                        // Get parent and create node with walker
-                        var walker = new JTokenWalker(rootObjectToken, convTokenPath);
-                        selectedNode = walker.WalkAndCreateNode();
-                    }
                     // Put in the new data
                     switch (ovewriteMode)
                     {
                         case NodeDataOvewriteMode.Update:
-                            selectedNode.Merge(dataBundleRoot);
+                            //selectedNode.Merge(dataBundleRoot);
+
                             break;
 
                         case NodeDataOvewriteMode.Put:
-                            if (selectedNode.Parent != null)
-                            {
-                                selectedNode.Replace(dataBundleRoot);
-                            }
-                            else // Root node
-                            {
-                                rootObjectToken = dataBundleRoot;
-                            }
+                            //if (selectedNode.Parent != null)
+                            //{
+                            //    selectedNode.Replace(dataBundleRoot);
+                            //}
+                            //else // Root node
+                            //{
+                            //    rootObjectToken = dataBundleRoot;
+                            //}
                             break;
 
                         case NodeDataOvewriteMode.Push:
@@ -67,7 +63,7 @@ namespace dynDBx.Services.DynDatabase
                             break;
                     }
                     // Update and store
-                    rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
+                    rootObjectContainer.FlattenedJObject = rootObjectToken.ToString(Formatting.None);
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
@@ -86,7 +82,7 @@ namespace dynDBx.Services.DynDatabase
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 using (var trans = db.BeginTrans())
                 {
-                    var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
+                    var rootObjectToken = JObject.Parse(rootObjectContainer.FlattenedJObject);
                     var removeTok = rootObjectToken.SelectToken(convTokenPath);
                     if (removeTok.Parent != null)
                     {
@@ -99,7 +95,7 @@ namespace dynDBx.Services.DynDatabase
                     rootObjectToken = new JObject();
                     }
                 // Update and store
-                rootObjectContainer.JObject = rootObjectToken.ToString(Formatting.None);
+                rootObjectContainer.FlattenedJObject = rootObjectToken.ToString(Formatting.None);
                     store.Update(rootObjectContainer);
                     trans.Commit();
                 }
@@ -115,7 +111,7 @@ namespace dynDBx.Services.DynDatabase
                 var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
-                var rootObjectToken = JObject.Parse(rootObjectContainer.JObject);
+                var rootObjectToken = JObject.Parse(rootObjectContainer.FlattenedJObject);
                 return (JObject)rootObjectToken.SelectToken(convTokenPath);
             });
         }
