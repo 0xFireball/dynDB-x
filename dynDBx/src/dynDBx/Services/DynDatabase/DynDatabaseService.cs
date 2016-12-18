@@ -104,7 +104,7 @@ namespace dynDBx.Services.DynDatabase
 
         public static async Task<JObject> GetData(string path)
         {
-            var convTokenPrfx = DynPathUtilities.ConvertUriPathToTokenPrefix(path);
+            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             return await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
@@ -112,7 +112,7 @@ namespace dynDBx.Services.DynDatabase
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var unflattenedJObj = JsonFlattener.UnflattenJObject(rootObjectContainer.FlattenedJObject);
-                return (JObject)unflattenedJObj.SelectToken(convTokenPrfx);
+                return (JObject)unflattenedJObj.SelectToken(convTokenPath);
             });
         }
     }
