@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace dynDBx.Utilities
+namespace IridiumIon.JsonFlat2
 {
     public static class JsonFlattener
     {
