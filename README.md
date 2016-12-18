@@ -100,6 +100,10 @@ on a deserialized representation.
 The only time the data needs to be deserialized is when the user queries
 for raw JSON!
 
+All the code used for flattened JSON object manipulation is encapsulated
+into a reusable .NET Core library! See `dynDBx\src\IridiumIon.JsonFlat2`.
+All code in this project is licensed under the AGPLv3.
+
 ### Much better solution (improvements!)
 
 The previously described is definitely not the best solution, though it is relatively
