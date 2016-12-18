@@ -57,7 +57,7 @@ namespace dynDBx.Services.DynDatabase
                                 // Flatten input bundle
                                 var flattenedBundle = new FlatJsonObject(dataBundleRoot, convTokenPrfx);
                                 // Remove existing data
-                                FlatJsonTools.RemoveNode(convTokenPath, flattenedRootObject);
+                                flattenedRootObject.RemoveNode(convTokenPath);
                                 // Add new data
                                 flattenedRootObject.Merge(flattenedBundle);
                             }
@@ -97,8 +97,8 @@ namespace dynDBx.Services.DynDatabase
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 using (var trans = db.BeginTrans())
                 {
-                    var flattenedJObj = rootObjectContainer.FlattenedJObject;
-                    FlatJsonTools.RemoveNode(convTokenPath, flattenedJObj);
+                    var flattenedJObj = new FlatJsonObject(rootObjectContainer.FlattenedJObject);
+                    flattenedJObj.RemoveNode(convTokenPath);
                     // Update and store
                     rootObjectContainer.FlattenedJObject = flattenedJObj;
                     store.Update(rootObjectContainer);

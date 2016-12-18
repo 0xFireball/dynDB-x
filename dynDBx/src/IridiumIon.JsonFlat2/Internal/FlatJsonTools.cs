@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace IridiumIon.JsonFlat2.Internal
 {
-    public static class FlatJsonTools
+    internal static class FlatJsonTools
     {
         /// <summary>
         /// Remove all nodes (including children!) that match the path. Path should not end with ., suffix will be auto-added

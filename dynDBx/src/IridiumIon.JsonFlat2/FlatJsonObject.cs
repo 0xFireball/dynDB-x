@@ -31,6 +31,11 @@ namespace IridiumIon.JsonFlat2
             Dictionary.MergeInto(other.Select(o => o.Dictionary).ToArray());
         }
 
+        public void RemoveNode(string path)
+        {
+            FlatJsonTools.RemoveNode(path, this);
+        }
+
         public JObject Unflatten()
         {
             return JsonFlattener.UnflattenJObject(Dictionary);
