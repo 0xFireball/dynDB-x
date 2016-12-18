@@ -3,9 +3,9 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IridiumIon.JsonFlat2
+namespace IridiumIon.JsonFlat2.Internal
 {
-    public static class JsonFlattener
+    internal static class JsonFlattener
     {
         /// <summary>
         /// Flatten JObject - http://stackoverflow.com/a/35838986

@@ -2,7 +2,7 @@
 
 namespace IridiumIon.JsonFlat2.Internal
 {
-    public static class DictMerger
+    internal static class DictMerger
     {
         /// <summary>
         /// Merge some dictionaries, overwriting contents. Later dictionaries have higher priority and will overwrite entries

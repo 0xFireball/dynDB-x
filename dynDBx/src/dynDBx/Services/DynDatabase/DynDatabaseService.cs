@@ -29,7 +29,7 @@ namespace dynDBx.Services.DynDatabase
                         store.Insert(new JsonObjectStoreContainer
                         {
                             ContainerId = Guid.NewGuid(),
-                            FlattenedJObject = JsonFlattener.FlattenJObject(new JObject())
+                            FlattenedJObject = new FlatJsonObject()
                         });
                         trans.Commit();
                     }
@@ -46,7 +46,7 @@ namespace dynDBx.Services.DynDatabase
                         case NodeDataOvewriteMode.Update:
                             {
                                 // Flatten input bundle
-                                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
+                                var flattenedBundle = new FlatJsonObject(dataBundleRoot, convTokenPrfx);
                                 flattenedRootObject.MergeInto(flattenedBundle);
                             }
 
@@ -55,7 +55,7 @@ namespace dynDBx.Services.DynDatabase
                         case NodeDataOvewriteMode.Put:
                             {
                                 // Flatten input bundle
-                                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
+                                var flattenedBundle = new FlatJsonObject(dataBundleRoot, convTokenPrfx);
                                 // Remove existing data
                                 FlatJsonTools.RemoveNode(convTokenPath, flattenedRootObject);
                                 // Add new data
@@ -107,7 +107,7 @@ namespace dynDBx.Services.DynDatabase
             });
         }
 
-        public static async Task<JObject> GetData(string path)
+        public static async Task<JToken> GetData(string path)
         {
             var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             return await Task.Run(() =>
@@ -116,8 +116,8 @@ namespace dynDBx.Services.DynDatabase
                 var store = db.GetCollection<JsonObjectStoreContainer>(DatabaseAccessService.GetDataStoreKey(0));
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
-                var unflattenedJObj = JsonFlattener.UnflattenJObject(rootObjectContainer.FlattenedJObject);
-                return (JObject)unflattenedJObj.SelectToken(convTokenPath);
+                var unflattenedJObj = new FlatJsonObject(rootObjectContainer.FlattenedJObject).Unflatten();
+                return unflattenedJObj.SelectToken(convTokenPath);
             });
         }
     }
