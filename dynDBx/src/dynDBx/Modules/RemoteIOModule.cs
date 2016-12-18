@@ -80,10 +80,10 @@ namespace dynDBx.Modules
             }
 
             // Write data
-            await DynDatabaseService.PlaceData(dataBundleJ, path, NodeDataOvewriteMode.Push);
+            var pushId = await DynDatabaseService.PlaceData(dataBundleJ, path, NodeDataOvewriteMode.Push);
 
             // Return data written
-            return Response.FromJsonString(dataBundleJ.ToString());
+            return Response.AsJsonNet(new { name = pushId });
         }
 
         private async Task<Response> HandleDeleteData(dynamic args)

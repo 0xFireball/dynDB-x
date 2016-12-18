@@ -11,8 +11,9 @@ namespace dynDBx.Services.DynDatabase
 {
     public static class DynDatabaseService
     {
-        public static async Task PlaceData(JObject dataBundleRoot, string path, NodeDataOvewriteMode ovewriteMode)
+        public static async Task<string> PlaceData(JObject dataBundleRoot, string path, NodeDataOvewriteMode ovewriteMode)
         {
+            string result = null; // Optionally used to return a result
             var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
             var convTokenPrfx = DynPathUtilities.ConvertUriPathToTokenPrefix(path);
             await Task.Run(() =>
@@ -70,6 +71,7 @@ namespace dynDBx.Services.DynDatabase
                                 // Flatten input bundle
                                 var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
                                 flattenedRootObject.MergeInto(flattenedBundle);
+                                result = pushId;
                             }
                             break;
                     }
@@ -80,6 +82,7 @@ namespace dynDBx.Services.DynDatabase
                 }
                 // Data was written
             });
+            return result;
         }
 
         public static async Task DeleteData(string path)
