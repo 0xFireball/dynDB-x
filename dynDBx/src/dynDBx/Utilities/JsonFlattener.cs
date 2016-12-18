@@ -11,12 +11,12 @@ namespace dynDBx.Utilities
         /// </summary>
         /// <param name="jObj"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> FlattenJObject(JObject jObj)
+        public static Dictionary<string, string> FlattenJObject(JObject jObj, string prefix = "")
         {
             IEnumerable<JToken> jTokens = jObj.Descendants().Where(p => p.Count() == 0);
             Dictionary<string, string> flattenedDict = jTokens.Aggregate(new Dictionary<string, string>(), (properties, jToken) =>
             {
-                properties.Add(jToken.Path, jToken.ToString());
+                properties.Add(prefix + jToken.Path, jToken.ToString());
                 return properties;
             });
             return flattenedDict;

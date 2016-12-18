@@ -12,7 +12,7 @@ namespace dynDBx.Services.DynDatabase
     {
         public static async Task PlaceData(JObject dataBundleRoot, string path, NodeDataOvewriteMode ovewriteMode)
         {
-            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
+            var convTokenPrfx = DynPathUtilities.ConvertUriPathToTokenPrefix(path);
             await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
@@ -25,7 +25,7 @@ namespace dynDBx.Services.DynDatabase
                         store.Insert(new JsonObjectStoreContainer
                         {
                             ContainerId = Guid.NewGuid(),
-                            FlattenedJObject = JsonFlattener.FlattenJObject(dataBundleRoot)
+                            FlattenedJObject = JsonFlattener.FlattenJObject(new JObject())
                         });
                         trans.Commit();
                     }
@@ -33,7 +33,7 @@ namespace dynDBx.Services.DynDatabase
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var flattenedRootObject = rootObjectContainer.FlattenedJObject;
                 //var rootObjectJ = JsonFlattener.UnflattenJObject(flattenedRootObject);
-                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot);
+                var flattenedBundle = JsonFlattener.FlattenJObject(dataBundleRoot, convTokenPrfx);
 
                 using (var trans = db.BeginTrans())
                 {
@@ -104,7 +104,7 @@ namespace dynDBx.Services.DynDatabase
 
         public static async Task<JObject> GetData(string path)
         {
-            var convTokenPath = DynPathUtilities.ConvertUriPathToTokenPath(path);
+            var convTokenPrfx = DynPathUtilities.ConvertUriPathToTokenPrefix(path);
             return await Task.Run(() =>
             {
                 var db = DatabaseAccessService.OpenOrCreateDefault();
@@ -112,7 +112,7 @@ namespace dynDBx.Services.DynDatabase
 
                 var rootObjectContainer = store.FindAll().FirstOrDefault();
                 var unflattenedJObj = JsonFlattener.UnflattenJObject(rootObjectContainer.FlattenedJObject);
-                return (JObject)unflattenedJObj.SelectToken(convTokenPath);
+                return (JObject)unflattenedJObj.SelectToken(convTokenPrfx);
             });
         }
     }

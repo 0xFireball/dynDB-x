@@ -9,7 +9,17 @@
 
         public static string ConvertUriPathToTokenPath(string uriPath)
         {
-            return uriPath.Replace("/", ".");
+            // This will get rid of double slashes and other nonsense
+            var joinedSegments = string.Join(".", ConvertUriPathToSegments(uriPath));
+            return joinedSegments;
+        }
+
+        public static string ConvertUriPathToTokenPrefix(string uriPath)
+        {
+            var tokPath = ConvertUriPathToTokenPath(uriPath);
+            // if tokPath isn't empty, it needs . suffix to be a valid prefix
+            if (tokPath.Length > 0) tokPath += ".";
+            return tokPath;
         }
     }
 }
